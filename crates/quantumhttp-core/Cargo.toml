@@ -1,0 +1,15 @@
+[package]
+name = "quantumhttp-core"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Safe Rust wrappers and high-level API over liboqs for QuantumHTTP"
+repository = "https://github.com/0xReLogic/QuantumHTTP"
+
+[features]
+default = []
+oqs = ["quantumhttp-oqs-sys/oqs"]
+
+[dependencies]
+quantumhttp-oqs-sys = { path = "../quantumhttp-oqs-sys" }
+thiserror = "1"

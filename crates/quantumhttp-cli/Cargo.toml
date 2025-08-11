@@ -1,0 +1,18 @@
+[package]
+name = "quantumhttp-cli"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "CLI tools for QuantumHTTP (key/cert management)"
+repository = "https://github.com/0xReLogic/QuantumHTTP"
+
+[features]
+# Enable `oqs` feature on core when building CLI with `--features oqs`.
+oqs = ["quantumhttp-core/oqs"]
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+quantumhttp-core = { path = "../quantumhttp-core" }
+thiserror = "1"
+anyhow = "1"
+base64 = "0.21"

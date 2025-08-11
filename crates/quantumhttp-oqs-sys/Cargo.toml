@@ -1,0 +1,23 @@
+[package]
+name = "quantumhttp-oqs-sys"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Low-level FFI bindings to liboqs for QuantumHTTP"
+repository = "https://github.com/0xReLogic/QuantumHTTP"
+readme = false
+build = "build.rs"
+
+[features]
+# Default to stub so workspace can compile without liboqs installed.
+default = ["stub"]
+oqs = []
+stub = []
+
+[dependencies]
+libc = "0.2"
+
+[build-dependencies]
+# Only used if feature `oqs` is enabled; build.rs will early-exit otherwise.
+bindgen = "0.69"
+pkg-config = "0.3"

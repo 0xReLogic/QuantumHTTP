@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "crates/quantumhttp-oqs-sys",
+    "crates/quantumhttp-core",
+    "crates/quantumhttp-cli",
+]
+resolver = "2"

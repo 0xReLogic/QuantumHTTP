@@ -1,0 +1,15 @@
+/target/
+**/target/
+Cargo.lock
+todo.txt
+.DS_Store
+**/*.rs.bk
+*.log
+/.idea/
+/.vscode/
+
+# PQC artifacts (generated during local testing)
+pk.bin
+sk.bin
+ct.bin
+ss*.bin
