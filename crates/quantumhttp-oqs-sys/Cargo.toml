@@ -21,3 +21,7 @@ libc = "0.2"
 # Only used if feature `oqs` is enabled; build.rs will early-exit otherwise.
 bindgen = "0.69"
 pkg-config = "0.3"
+
+[lib]
+# Disable doctests because bindgen-generated docs may contain C snippets that are not valid Rust
+doctest = false
