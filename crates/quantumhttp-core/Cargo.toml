@@ -13,3 +13,4 @@ oqs = ["quantumhttp-oqs-sys/oqs"]
 [dependencies]
 quantumhttp-oqs-sys = { path = "../quantumhttp-oqs-sys" }
 thiserror = "1"
+zeroize = "1"

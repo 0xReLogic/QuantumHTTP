@@ -13,3 +13,6 @@ pk.bin
 sk.bin
 ct.bin
 ss*.bin
+
+# Local checklist (do not commit)
+tododone.txt

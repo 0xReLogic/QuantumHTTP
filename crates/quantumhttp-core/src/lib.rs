@@ -7,6 +7,9 @@ pub mod status {
     }
 }
 
+#[cfg(feature = "oqs")]
+use zeroize::Zeroize;
+
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
     #[error("liboqs not available; build with `--features oqs` and ensure liboqs is installed")] 
@@ -67,6 +70,9 @@ impl KyberKem {
             quantumhttp_oqs_sys::OQS_KEM_free(kem);
 
             if status != 0 {
+                // Zeroize sensitive buffers before returning error
+                sk.zeroize();
+                pk.zeroize();
                 return Err(Error::OqsKeypairFailed);
             }
 
@@ -113,6 +119,9 @@ impl KyberKem {
             let status = quantumhttp_oqs_sys::OQS_KEM_keypair(kem, pk.as_mut_ptr(), sk.as_mut_ptr());
             quantumhttp_oqs_sys::OQS_KEM_free(kem);
             if status != 0 {
+                // Zeroize sensitive buffers before returning error
+                sk.zeroize();
+                pk.zeroize();
                 return Err(Error::OqsKeypairFailed);
             }
             Ok((pk, sk))
@@ -167,6 +176,9 @@ impl KyberKem {
             );
             quantumhttp_oqs_sys::OQS_KEM_free(kem);
             if status != 0 {
+                // Zeroize sensitive buffers before returning error
+                ss.zeroize();
+                ct.zeroize();
                 return Err(Error::OqsEncapsFailed);
             }
             Ok((ct, ss))
@@ -223,6 +235,8 @@ impl KyberKem {
             );
             quantumhttp_oqs_sys::OQS_KEM_free(kem);
             if status != 0 {
+                // Zeroize sensitive buffers before returning error
+                ss.zeroize();
                 return Err(Error::OqsDecapsFailed);
             }
             Ok(ss)

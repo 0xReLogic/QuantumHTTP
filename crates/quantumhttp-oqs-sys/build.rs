@@ -8,6 +8,10 @@ fn main() {
         return;
     }
 
+    // Rebuild if env changes
+    println!("cargo:rerun-if-env-changed=OQS_INCLUDE_DIR");
+    println!("cargo:rerun-if-env-changed=OQS_LIB_DIR");
+
     // Try to discover liboqs via pkg-config or environment variables
     // Env overrides: OQS_INCLUDE_DIR, OQS_LIB_DIR
     let include_dir_env = env::var("OQS_INCLUDE_DIR").ok();
@@ -54,18 +58,33 @@ fn main() {
     println!("cargo:rustc-link-lib=oqs");
 
     // Generate bindings if we have includes
-    if let Some(inc) = include_paths.get(0) {
-        let header = inc.join("oqs/oqs.h");
-        if header.exists() {
+    if !include_paths.is_empty() {
+        // Try to locate oqs.h in any of the include paths
+        let mut chosen_inc: Option<PathBuf> = None;
+        for inc in &include_paths {
+            let candidate = inc.join("oqs").join("oqs.h");
+            if candidate.exists() {
+                println!("cargo:warning=Found oqs.h at {}", candidate.display());
+                chosen_inc = Some(inc.clone());
+                break;
+            } else {
+                println!("cargo:warning=Not found: {}", candidate.display());
+            }
+        }
+
+        if let Some(primary_inc) = chosen_inc {
+            let header = primary_inc.join("oqs").join("oqs.h");
             let mut builder = bindgen::Builder::default()
                 .header(header.to_string_lossy())
                 .allowlist_function("OQS_.*")
                 .allowlist_type("OQS_.*")
                 .allowlist_var("OQS_.*")
-                .clang_arg(format!("-I{}", inc.display()));
+                .clang_arg(format!("-I{}", primary_inc.display()));
 
-            for extra in include_paths.iter().skip(1) {
-                builder = builder.clang_arg(format!("-I{}", extra.display()));
+            for extra in &include_paths {
+                if extra != &primary_inc {
+                    builder = builder.clang_arg(format!("-I{}", extra.display()));
+                }
             }
 
             let bindings = builder
@@ -80,7 +99,12 @@ fn main() {
 
             println!("cargo:rerun-if-changed=build.rs");
         } else {
-            println!("cargo:warning=Could not find oqs.h under {}", inc.display());
+            println!("cargo:warning=oqs.h not found in any include path. Checked:");
+            for inc in &include_paths {
+                println!("cargo:warning=  - {}", inc.display());
+            }
+            // Fail fast to avoid confusing missing bindings error
+            panic!("liboqs headers not found; set OQS_INCLUDE_DIR to the directory containing 'oqs/oqs.h'");
         }
     }
 }
