@@ -13,6 +13,8 @@ pk.bin
 sk.bin
 ct.bin
 ss*.bin
+message.bin
+sig.bin
 
 # Local checklist (do not commit)
 tododone.txt
