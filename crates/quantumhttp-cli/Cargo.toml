@@ -16,3 +16,4 @@ quantumhttp-core = { path = "../quantumhttp-core" }
 thiserror = "1"
 anyhow = "1"
 base64 = "0.21"
+zeroize = "1"
